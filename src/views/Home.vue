@@ -39,12 +39,8 @@ export default {
   },
   methods: {
     onSuggestionClick(suggestion) {
-      this.$router.push({
-        name: "Stop",
-        params: {
-          stopProp: JSON.stringify(suggestion)
-        }
-      });
+      this.$store.dispatch("setSelectedStop", JSON.stringify(suggestion));
+      this.$router.push("stop");
     }
   }
 }

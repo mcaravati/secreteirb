@@ -4,14 +4,21 @@ import createPersistedState from "vuex-persistedstate";
 const store = createStore({
     state () {
         return {
-            preferredStop: null
+            preferredStop: null,
+            selectedStop: null,
+            selectedWay: null
         }
     },
     mutations: {
-
         setPreferredStop(state, preferredStop) {
             state.preferredStop = preferredStop;
         },
+        setSelectedStop(state, selectedStop) {
+            state.selectedStop = selectedStop;
+        },
+        setSelectedWay(state, selectedWay) {
+            state.selectedWay = selectedWay;
+        }
     },
     actions: {
         hasSetPreferredStop({ _, state }) {
@@ -26,7 +33,38 @@ const store = createStore({
         },
         setPreferredStop({ commit, _ }, preferredStop ) {
             commit("setPreferredStop", preferredStop);
-        }
+        },
+
+        hasSetSelectedStop({ _, state }) {
+            return new Promise((resolve, _) => {
+                resolve(state.selectedStop !== null);
+            });
+        },
+        getSelectedStop({ _, state }) {
+            return new Promise((resolve, _) => {
+                resolve(state.selectedStop);
+            });
+        },
+        setSelectedStop({ commit, _ }, selectedStop ) {
+            commit("setSelectedStop", selectedStop);
+        },
+        clearSelectedStop({_, dispatch}) {
+            dispatch("setSelectedStop", null);
+        },
+
+        hasSetSelectedWay({ _, state }) {
+            return new Promise((resolve, _) => {
+                resolve(state.selectedWay !== null);
+            });
+        },
+        getSelectedWay({ _, state }) {
+            return new Promise((resolve, _) => {
+                resolve(state.selectedWay);
+            });
+        },
+        setSelectedWay({ commit, _ }, selectedWay ) {
+            commit("setSelectedWay", selectedWay);
+        },
     },
     plugins: [createPersistedState()]
 });

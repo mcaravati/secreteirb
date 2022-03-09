@@ -12,7 +12,15 @@ const routes = [
         meta: {
             isHomePage: true
         },
-        component: Home
+        component: Home,
+        beforeEnter: async (to, from, next) => {
+            if (await store.dispatch("hasSetPreferredStop")) {
+                next("/mystop");
+                return false;
+            }
+
+            next();
+        }
     },
     {
         path: "/stop",
@@ -21,7 +29,14 @@ const routes = [
             isHomePage: false
         },
         component: Stop,
-        props: true
+        props: true,
+        beforeEnter: async (to, from) => {
+            if (! await store.dispatch("hasSetSelectedStop")) {
+                return {
+                    name: "Home"
+                };
+            }
+        }
     },
     {
         path: "/mystop",
@@ -30,35 +45,20 @@ const routes = [
             isHomePage: false
         },
         component: MyStop,
-        props: true
+        props: true,
+        beforeEnter: async (to, from) => {
+            if (! await store.dispatch("hasSetSelectedWay")) {
+                return {
+                    name: "Home"
+                };
+            }
+        }
     }
 ];
 
 const router = createRouter({
     history: createWebHashHistory(),
     routes
-});
-
-router.beforeEach((to, from, next) => {
-    if (to.matched.some(record => record.meta.isHomePage)) {
-        store.dispatch("getPreferredStop")
-            .then(value => {
-                const stop_object = JSON.parse(value);
-
-                if(stop_object) {
-                    next({
-                        path: "/planning",
-                        params: {
-                            nextUrl: to.fullPath
-                        }
-                    });
-                }
-                next();
-            })
-            .catch(reason => console.error(`Error on Routes : ${reason}`));
-    } else {
-        next();
-    }
 });
 
 export default router;

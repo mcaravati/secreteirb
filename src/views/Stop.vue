@@ -1,8 +1,8 @@
 <template>
   <div id="lines-wrapper">
-    <div class="line" v-bind:key="line" v-for="line in this.lines" @click="this.onLineClick(line)">
-      <img class="line-image" :src="line.image" :alt="line.transportCode" />
-      <span>{{line.transportCode}} {{line.destination}}</span>
+    <div v-for="line in this.lines" v-bind:key="line" class="line" @click="this.onLineClick(line)">
+      <img :alt="line.transportCode" :src="line.image" class="line-image"/>
+      <span>{{ line.transportCode }} {{ line.destination }}</span>
     </div>
   </div>
 </template>
@@ -12,37 +12,36 @@ import axios from "axios";
 
 export default {
   name: "Stop",
-  props: {
-    stopProp: {
-      type: String,
-      required: true
-    }
-  },
   data() {
     return {
-      stop: JSON.parse(this.stopProp),
+      stop: undefined,
       lines: []
     }
   },
   mounted() {
-    axios.get(this.stop.url, {headers: {}})
-        .then(response => {
-          response.data.stopPoints.forEach(stopPoint => stopPoint.routes.forEach(route => {
-            this.getLineInformations(route.line.id)
-            .then(json => {
-              this.lines.push({
-                routeId: route.id,
-                destination: route.name,
-                lineId: json.id,
-                transportType: json.type,
-                transportCode: json.code,
-                image: json.picto,
-                stopPointId: stopPoint.id
+    this.$store.dispatch("getSelectedStop")
+        .then(stop => {
+          this.stop = JSON.parse(stop);
+          axios.get(this.stop.url, {headers: {}})
+              .then(response => {
+                response.data.stopPoints.forEach(stopPoint => stopPoint.routes.forEach(route => {
+                  this.getLineInformations(route.line.id)
+                      .then(json => {
+                        this.lines.push({
+                          routeId: route.id,
+                          destination: route.name,
+                          lineId: json.id,
+                          transportType: json.type,
+                          transportCode: json.code,
+                          image: json.picto,
+                          stopPointId: stopPoint.id
+                        });
+                      })
+                }));
               });
-            })
-          }));
-        })
-        .catch(console.error);
+        }).catch(console.error);
+
+
   },
   methods: {
     getLineInformations(lineId) {
@@ -53,12 +52,10 @@ export default {
       });
     },
     onLineClick(line) {
-      this.$router.push({
-        name: "MyStop",
-        params: {
-          stopProp: JSON.stringify(line)
-        }
-      });
+      this.$store.dispatch("setSelectedWay", JSON.stringify(line));
+      this.$store.dispatch("clearSelectedStop");
+
+      this.$router.push("mystop");
     }
   }
 }

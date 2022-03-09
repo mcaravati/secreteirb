@@ -12,7 +12,7 @@
 
   <footer>
     <router-link class="to-transports" to="/">Transports</router-link>
-    <router-link class="to-planning" to="/home">Planning</router-link>
+    <router-link class="to-planning" to="/">Planning</router-link>
   </footer>
 </template>
 

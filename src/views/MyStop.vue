@@ -1,11 +1,10 @@
 <template>
-  <div class="stop-wrapper">
+  <div v-if="this.stop" class="stop-wrapper">
     <div class="stop-header">
       <img :src="this.stop.image" :alt="this.stop.transportCode">
       <span>{{ this.stop.transportCode }} {{ this.stop.destination }}</span>
     </div>
     <h2>{{ this.arrivalTime }}</h2>
-    <h3>{{ this.milliArrivalTime }}</h3>
   </div>
 </template>
 
@@ -14,28 +13,25 @@ import axios from "axios";
 
 export default {
   name: "MyStop",
-  props: {
-    stopProp: {
-      type: String,
-      required: true
-    }
-  },
   data() {
     return {
-      stop: JSON.parse(this.stopProp),
+      stop: undefined,
       externalCode: undefined,
       arrivalTime: "Loading ...",
-      milliArrivalTime: "",
       refreshIntervalId: undefined
     }
   },
   mounted() {
-    axios
-        .get(`https://ws.infotbm.com/ws/1.0/stop-points-informations/${this.stop.routeId}/${this.stop.stopPointId}`)
-        .then(response => this.externalCode = response.data.externalCode)
-        .catch(console.error);
+    this.$store.dispatch("getSelectedWay").then(stop => {
+      this.stop = JSON.parse(stop);
 
-    this.refreshIntervalId = setInterval(this.refreshArrivalTime, 2000);
+      axios
+          .get(`https://ws.infotbm.com/ws/1.0/stop-points-informations/${this.stop.routeId}/${this.stop.stopPointId}`)
+          .then(response => this.externalCode = response.data.externalCode)
+          .catch(console.error);
+
+      this.refreshIntervalId = setInterval(this.refreshArrivalTime, 1000);
+    }).catch(console.error);
   },
   methods: {
     refreshArrivalTime() {
@@ -61,10 +57,12 @@ export default {
             }
 
             this.arrivalTime = stopDestination[0].waittime_text;
-            this.milliArrivalTime = stopDestination[0].waittime;
           })
           .catch(console.error);
     }
+  },
+  unmounted() {
+    clearInterval(this.refreshIntervalId);
   }
 }
 </script>
@@ -87,5 +85,4 @@ export default {
 .stop-header > img {
   width: 10vw;
 }
-
 </style>
