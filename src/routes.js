@@ -4,14 +4,12 @@ import store from "./store.js";
 import Home from "./views/Home.vue";
 import Stop from "./views/Stop.vue";
 import MyStop from "./views/MyStop.vue";
+import Planning from "./views/Planning.vue";
 
 const routes = [
     {
         path: "/",
         name: "Home",
-        meta: {
-            isHomePage: true
-        },
         component: Home,
         beforeEnter: async (to, from, next) => {
             if (await store.dispatch("hasSetPreferredStop")) {
@@ -25,11 +23,7 @@ const routes = [
     {
         path: "/stop",
         name: "Stop",
-        meta: {
-            isHomePage: false
-        },
         component: Stop,
-        props: true,
         beforeEnter: async (to, from) => {
             if (! await store.dispatch("hasSetSelectedStop")) {
                 return {
@@ -41,11 +35,7 @@ const routes = [
     {
         path: "/mystop",
         name: "MyStop",
-        meta: {
-            isHomePage: false
-        },
         component: MyStop,
-        props: true,
         beforeEnter: async (to, from) => {
             if (! await store.dispatch("hasSetSelectedWay")) {
                 return {
@@ -53,7 +43,12 @@ const routes = [
                 };
             }
         }
-    }
+    },
+    {
+        path: "/planning",
+        name: "Planning",
+        component: Planning,
+    },
 ];
 
 const router = createRouter({

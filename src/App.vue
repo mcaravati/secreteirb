@@ -12,7 +12,7 @@
 
   <footer>
     <router-link class="to-transports" to="/">Transports</router-link>
-    <router-link class="to-planning" to="/">Planning</router-link>
+    <router-link class="to-planning" to="/planning">Planning</router-link>
   </footer>
 </template>
 
@@ -24,13 +24,8 @@
   text-align: center;
   color: #2c3e50;
 
-  display: grid;
-  grid-template-areas:
-    "header"
-    "main"
-    "footer";
-  grid-template-rows: 63px auto 63px;
-  grid-auto-flow: dense;
+  display: flex;
+  flex-direction: column;
 
   height: 100vh;
 }
@@ -40,43 +35,27 @@ html, body {
 }
 
 header {
-  /*background-color: red;*/
-  grid-area: header;
+  height: 65px;
+  text-align: center;
 }
 
 main {
-  /*background-color: blue;*/
-  grid-area: main;
-  padding: 1%;
-
-  display: flex;
-  justify-content: flex-start;
-  align-items: center;
-  flex-direction: column;
-
   overflow-y: auto;
-  min-height: 0;  /* NEW */
-  min-width: 0;   /* NEW; needed for Firefox */
+  box-sizing: border-box;
+  display: flex;
+  justify-content: center;
+  align-items: flex-start;
+  height: 100%;
 }
 
 footer {
-  /*background-color: green;*/
-  grid-area: footer;
-
-  border-top: #2c3e50 solid 2px;
-  min-height: 0;
-  min-width: 0;
-
-  display: grid;
-  grid-template-areas: "to-transports to-planning";
-  grid-template-columns: 1fr 1fr;
-}
-
-.to-planning {
-  grid-area: to-planning;
-}
-
-.to-transports {
-  grid-area: to-transports;
+  position: absolute;
+  bottom: 0;
+  width: 100%;
+  height: 65px;
+  display: flex;
+  flex-direction: row;
+  justify-content: space-evenly;
+  align-items: center;
 }
 </style>

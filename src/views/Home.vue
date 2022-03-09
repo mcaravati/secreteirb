@@ -23,12 +23,14 @@ export default {
   mounted() {
     this.searchBar = document.getElementById("search-bar");
 
+    // Wait for user to stop typing to send the search request
     this.searchBar.addEventListener("keyup", event => {
       clearTimeout(this.timeout);
 
       this.timeout = setTimeout(() => {
         const input = event.target.value;
 
+        // Send the search request
         axios
             .get(`https://ws.infotbm.com/ws/1.0/get-schedule/${input}?referer=www`, {headers:{}})
             .then(response => {
