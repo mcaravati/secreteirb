@@ -1,0 +1,113 @@
+<template>
+  <div class="search-wrapper">
+    <input id="search-bar" type="text">
+    <div id="suggestion-wrapper">
+      <div class="suggestion" v-bind:key="suggestion" v-for="suggestion in this.suggestions.slice(0, 5)" @click="onSuggestionClick(suggestion)">
+        {{suggestion.name}} - {{suggestion.city}}
+      </div>
+    </div>
+  </div>
+</template>
+
+<script>
+import axios from "axios";
+
+export default {
+  name: "Home",
+  data() {
+    return {
+      suggestions: [],
+      searchBar: undefined
+    }
+  },
+  mounted() {
+    this.searchBar = document.getElementById("search-bar");
+
+    this.searchBar.addEventListener("keyup", event => {
+      clearTimeout(this.timeout);
+
+      this.timeout = setTimeout(() => {
+        const input = event.target.value;
+
+        axios
+            .get(`https://ws.infotbm.com/ws/1.0/get-schedule/${input}?referer=www`, {headers:{}})
+            .then(response => {
+              this.suggestions = response.data.filter(e => e.city !== undefined && e.city !== null);
+            }).catch(console.error);
+      }, 500);
+    });
+  },
+  methods: {
+    onSuggestionClick(suggestion) {
+      this.$router.push({
+        name: "Stop",
+        params: {
+          stopProp: JSON.stringify(suggestion)
+        }
+      });
+    }
+  }
+}
+</script>
+
+<style scoped>
+.search-wrapper {
+  position: relative;
+  width: 90vw;
+}
+
+.suggestion:hover {
+  filter: brightness(0.9);
+}
+#suggestion-wrapper {
+  position: absolute;
+  width: 100%;
+  display: flex;
+  flex-grow: revert;
+  flex-direction: column;
+}
+
+#search-bar {
+  border-radius: 15px;
+  font-size: 17px;
+  padding: 0 0 0 50px;
+  display: block;
+  user-select: text;
+  outline: none;
+  height: 55px;
+  border: 4px solid #e5e5e5;
+  background-color: #f7f7f7;
+  position: relative;
+  box-sizing: border-box;
+  width: 100%;
+}
+
+.suggestion {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background-color: #f7f7f7;
+  height: 40px;
+  border-radius: 15px;
+  margin: 1vh 0 0;
+  padding: .5vh 0;
+  border: 4px solid #e5e5e5;
+  cursor: pointer;
+}
+
+a {
+  color: #42b983;
+}
+
+label {
+  margin: 0 0.5em;
+  font-weight: bold;
+}
+
+code {
+  background-color: #eee;
+  padding: 2px 4px;
+  border-radius: 4px;
+  color: #304455;
+}
+</style>
