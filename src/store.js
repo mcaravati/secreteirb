@@ -6,10 +6,14 @@ const store = createStore({
         return {
             preferredStop: null,
             selectedStop: null,
-            selectedWay: null
+            selectedWay: null,
+            user: null
         }
     },
     mutations: {
+        setUser(state, user) {
+            state.user = user;
+        },
         setPreferredStop(state, preferredStop) {
             state.preferredStop = preferredStop;
         },
@@ -64,6 +68,20 @@ const store = createStore({
         },
         setSelectedWay({ commit, _ }, selectedWay ) {
             commit("setSelectedWay", selectedWay);
+        },
+
+        isLoggedIn({ _, state }) {
+            return new Promise((resolve, _) => {
+                resolve(state.user !== null);
+            });
+        },
+        getUser({ _, state }) {
+            return new Promise((resolve, _) => {
+                resolve(state.user);
+            });
+        },
+        setUser({ commit, _ }, user ) {
+            commit("setUser", user);
         },
     },
     plugins: [createPersistedState()]

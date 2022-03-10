@@ -1,14 +1,12 @@
 <template>
       <section>
         <h2>{{ studentName }}</h2>
-<!--        <SaveButton/>-->
         <nav>
           <span class="button" @click="onPreviousClick"><img src="../assets/chevron-left-solid.svg" alt="chevron-left"></span>
           <span class="button" @click="onNextClick"><img src="../assets/chevron-right-solid.svg" alt="chevron-right"></span>
         </nav>
       </section>
 
-      <!-- If the user is on desktop, display a week at a time -->
       <div id="planning-wrapper">
         <div
             v-for="(values, _) in this.planning_data"
@@ -28,13 +26,11 @@
 </template>
 
 <script>
-// import SaveButton from "../components/SaveButton.vue";
 import {getWeek} from "../service/PlanningService";
 import moment from 'moment';
 
 export default {
   name: "Planning",
-  // components: {SaveButton},
   data() {
     return {
       currentPlanningName: "",

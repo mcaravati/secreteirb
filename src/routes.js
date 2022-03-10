@@ -5,6 +5,7 @@ import Home from "./views/Home.vue";
 import Stop from "./views/Stop.vue";
 import MyStop from "./views/MyStop.vue";
 import Planning from "./views/Planning.vue";
+import Login from "./views/Login.vue";
 
 const routes = [
     {
@@ -48,7 +49,26 @@ const routes = [
         path: "/planning",
         name: "Planning",
         component: Planning,
+        beforeEnter: async (to, from) => {
+            if (! await store.dispatch("isLoggedIn")) {
+                return {
+                    name: "Login"
+                };
+            }
+        }
     },
+    {
+        path: "/login",
+        name: "Login",
+        component: Login,
+        beforeEnter: async (to, from) => {
+            if (await store.dispatch("isLoggedIn")) {
+                return {
+                    name: "Home"
+                };
+            }
+        }
+    }
 ];
 
 const router = createRouter({
