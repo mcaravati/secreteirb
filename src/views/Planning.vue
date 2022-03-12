@@ -175,11 +175,14 @@ export default {
   font-size: smaller;
 }
 
-section span.button {
+section > span.button {
   width: 2vw;
   min-width: unset;
-  padding: 2vh 4vw;
+  padding: 1vh 4vw;
+  background-color: white;
+  border-radius: 10px;
 }
+
 section {
   display: flex;
   flex-direction: row;

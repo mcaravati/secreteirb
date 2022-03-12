@@ -28,8 +28,11 @@
   display: flex;
   flex-direction: column;
 
-  height: 100vh;
   box-sizing: border-box;
+}
+
+html, body, #app {
+  height: 100%;
 }
 
 html, body {
