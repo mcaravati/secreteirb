@@ -1,5 +1,6 @@
 <template>
   <div class="search-wrapper">
+    <img alt="search-icon" class="search-icon" src="../assets/search.svg"/>
     <input id="search-bar" type="text">
     <div id="suggestion-wrapper">
       <div class="suggestion" v-bind:key="suggestion" v-for="suggestion in this.suggestions.slice(0, 5)" @click="onSuggestionClick(suggestion)">
@@ -30,6 +31,10 @@ export default {
       this.timeout = setTimeout(() => {
         const input = event.target.value;
 
+        if (input.length <= 1) {
+          this.suggestions = [];
+        }
+
         // Send the search request
         axios
             .get(`https://ws.infotbm.com/ws/1.0/get-schedule/${input}?referer=www`, {headers:{}})
@@ -52,6 +57,7 @@ export default {
 .search-wrapper {
   position: relative;
   width: 90vw;
+  margin-top: 15px;
 }
 
 .suggestion:hover {
@@ -72,9 +78,9 @@ export default {
   display: block;
   user-select: text;
   outline: none;
-  height: 55px;
-  border: 4px solid #e5e5e5;
-  background-color: #f7f7f7;
+  height: 50px;
+  border: 1px solid #e5e5e5;
+  background-color: white;
   position: relative;
   box-sizing: border-box;
   width: 100%;
@@ -84,13 +90,17 @@ export default {
   display: flex;
   justify-content: center;
   align-items: center;
-  background-color: #f7f7f7;
+  background-color: white;
   height: 40px;
   border-radius: 15px;
   margin: 1vh 0 0;
   padding: .5vh 0;
-  border: 4px solid #e5e5e5;
   cursor: pointer;
+}
+
+.suggestion:active {
+  background-color: #f7f7f7;
+  filter: brightness(0.9);
 }
 
 a {
@@ -107,5 +117,13 @@ code {
   padding: 2px 4px;
   border-radius: 4px;
   color: #304455;
+}
+
+.search-icon {
+  left: 7px;
+  top: 7px;
+  position: absolute;
+  width: 40px;
+  z-index: 1;
 }
 </style>

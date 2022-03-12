@@ -83,6 +83,9 @@ const store = createStore({
         setUser({ commit, _ }, user ) {
             commit("setUser", user);
         },
+        clearUser({ _, dispatch }) {
+            dispatch("setUser", null);
+        }
     },
     plugins: [createPersistedState()]
 });

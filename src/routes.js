@@ -6,6 +6,7 @@ import Stop from "./views/Stop.vue";
 import MyStop from "./views/MyStop.vue";
 import Planning from "./views/Planning.vue";
 import Login from "./views/Login.vue";
+import Account from "./views/Account.vue";
 
 const routes = [
     {
@@ -65,6 +66,18 @@ const routes = [
             if (await store.dispatch("isLoggedIn")) {
                 return {
                     name: "Home"
+                };
+            }
+        }
+    },
+    {
+        path: "/me",
+        name: "Account",
+        component: Account,
+        beforeEnter: async (to, from) => {
+            if (!await store.dispatch("isLoggedIn")) {
+                return {
+                    name: "Login"
                 };
             }
         }
