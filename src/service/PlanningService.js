@@ -6,7 +6,7 @@ export function getWeek(currentObject) {
 
     return new Promise((resolve, reject) => {
         axiosInstance
-            .get(`http://edmond.matteo-caravati.fr/planning/week/${id}/${weekId}`)
+            .get(`https://edmond.matteo-caravati.fr/planning/week/${id}/${weekId}`)
             .then(response => resolve(response.data.days))
             .catch(reject);
     });
