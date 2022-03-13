@@ -7,7 +7,8 @@ const store = createStore({
             preferredStop: null,
             selectedStop: null,
             selectedWay: null,
-            user: null
+            user: null,
+            selectedLesson: null
         }
     },
     mutations: {
@@ -22,6 +23,9 @@ const store = createStore({
         },
         setSelectedWay(state, selectedWay) {
             state.selectedWay = selectedWay;
+        },
+        setSelectedLesson(state, selectedLesson) {
+            state.selectedLesson = selectedLesson;
         }
     },
     actions: {
@@ -85,6 +89,23 @@ const store = createStore({
         },
         clearUser({ _, dispatch }) {
             dispatch("setUser", null);
+        },
+
+        hasSelectedLesson({ _, state }) {
+            return new Promise((resolve, _) => {
+                resolve(state.selectedLesson !== null);
+            });
+        },
+        getSelectedLesson({ _, state }) {
+            return new Promise((resolve, _) => {
+                resolve(state.selectedLesson);
+            });
+        },
+        setSelectedLesson({ commit, _ }, selectedLesson ) {
+            commit("setSelectedLesson", selectedLesson);
+        },
+        clearSelectedLesson({ _, dispatch }) {
+            dispatch("setSelectedLesson", null);
         }
     },
     plugins: [createPersistedState()]

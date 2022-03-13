@@ -7,6 +7,7 @@ import MyStop from "./views/MyStop.vue";
 import Planning from "./views/Planning.vue";
 import Login from "./views/Login.vue";
 import Account from "./views/Account.vue";
+import Lesson from "./views/Lesson.vue";
 
 const routes = [
     {
@@ -78,6 +79,18 @@ const routes = [
             if (!await store.dispatch("isLoggedIn")) {
                 return {
                     name: "Login"
+                };
+            }
+        }
+    },
+    {
+        path: "/lesson",
+        name: "Lesson",
+        component: Lesson,
+        beforeEnter: async (to, from) => {
+            if (!await store.dispatch("hasSelectedLesson")) {
+                return {
+                    name: "Home"
                 };
             }
         }

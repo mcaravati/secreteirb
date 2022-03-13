@@ -1,10 +1,12 @@
 <template>
-  <div v-if="this.stop" class="stop-wrapper">
-    <div class="stop-header">
-      <img :src="this.stop.image" :alt="this.stop.transportCode">
-      <span>{{ this.stop.transportCode }} {{ this.stop.destination }}</span>
+  <div class="stop-wrapper">
+    <div v-if="this.stop" class="stop">
+      <img :src="this.stop.image" alt="transport-image"/>
+      <div class="stop-body">
+        <h2>{{ this.stop.destination }}</h2>
+        <h3>{{ this.arrivalTime }}</h3>
+      </div>
     </div>
-    <h2>{{ this.arrivalTime }}</h2>
   </div>
 </template>
 
@@ -21,17 +23,16 @@ export default {
       refreshIntervalId: undefined
     }
   },
-  mounted() {
-    this.$store.dispatch("getSelectedWay").then(stop => {
-      this.stop = JSON.parse(stop);
+  async mounted() {
+    this.stop = JSON.parse(await this.$store.dispatch("getSelectedWay"));
+    console.log(this.stop);
 
-      axios
-          .get(`https://ws.infotbm.com/ws/1.0/stop-points-informations/${this.stop.routeId}/${this.stop.stopPointId}`)
-          .then(response => this.externalCode = response.data.externalCode)
-          .catch(console.error);
+    axios
+        .get(`https://ws.infotbm.com/ws/1.0/stop-points-informations/${this.stop.routeId}/${this.stop.stopPointId}`)
+        .then(response => this.externalCode = response.data.externalCode)
+        .catch(console.error);
 
-      this.refreshIntervalId = setInterval(this.refreshArrivalTime, 1000);
-    }).catch(console.error);
+    this.refreshIntervalId = setInterval(this.refreshArrivalTime, 1000);
   },
   methods: {
     refreshArrivalTime() {
@@ -70,9 +71,10 @@ export default {
 <style scoped>
 .stop-wrapper {
   display: flex;
-  flex-direction: column;
   justify-content: center;
   align-items: center;
+  height: 100%;
+  width: 100%;
 }
 
 .stop-header {
@@ -82,7 +84,32 @@ export default {
   align-items: center;
 }
 
-.stop-header > img {
-  width: 10vw;
+.stop {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: space-evenly;
+  border-radius: 15px;
+  height: 90%;
+  width: 80%;
+  word-break: break-word;
+  box-sizing: border-box;
+  position: relative;
+  overflow: hidden;
+}
+
+.stop-body {
+  padding: 1vh 5vw;
+  position: absolute;
+  top: 20%;
+  background-color: white;
+  border-top: 1px solid lightgray;
+  height: 50%;
+  border-radius: 15px;
+}
+
+.stop > img {
+  position: absolute;
+  top: 0;
 }
 </style>

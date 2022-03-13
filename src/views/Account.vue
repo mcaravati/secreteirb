@@ -1,11 +1,12 @@
 <template>
-  <div v-if="user">
-    <img src="../assets/id-card.png" alt="id-card" />
-    <div class="table">
-      <p>{{this.user.name}}</p>
-      <p>{{this.user.email}}</p>
-      <p>{{this.user.id}}</p>
-      <p class="logout" @click="logout">Déconnexion</p>
+  <div class="user-wrapper">
+    <div v-if="user" class="user">
+      <img src="../assets/id-card.png" alt="id-card" />
+      <div class="table">
+        <h2>{{this.user.name}}</h2>
+        <p>{{this.user.email}}</p>
+        <p class="logout" @click="logout">Déconnexion</p>
+      </div>
     </div>
   </div>
 </template>
@@ -44,5 +45,27 @@ img {
 
 .logout:hover {
   filter: brightness(0.9);
+}
+
+.user {
+  background-color: white;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: space-evenly;
+  border-radius: 15px;
+  height: 90%;
+  width: 80%;
+  padding: 1vh 5vw;
+  word-break: break-word;
+  box-sizing: border-box;
+}
+
+.user-wrapper {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100%;
+  width: 100%;
 }
 </style>

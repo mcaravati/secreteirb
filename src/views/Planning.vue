@@ -2,18 +2,18 @@
     <div class="planning-view">
       <section>
         <span class="button" @click="getPreviousDay"><img src="../assets/chevron-left-solid.svg" alt="chevron-left"></span>
-        <h4>{{ this.planning_data.utc }}</h4>
+        <h4 v-if="planning_data">{{ this.planning_data.utc }}</h4>
         <span class="button" @click="getNextDay"><img src="../assets/chevron-right-solid.svg" alt="chevron-right"></span>
       </section>
 
-      <div class="planning-wrapper">
+      <div class="planning-wrapper" v-if="planning_data">
           <div
               v-for="value in this.planning_data.events"
               class="event"
+              @click="displayLesson(value)"
           >
-            <span>{{ value.start }} - {{ value.end }}</span>
-            <span>{{ value.summary }}</span>
-            <span>{{ value.location }}</span>
+            <h6>{{ value.start }} - {{ value.end }}</h6>
+            <h4>{{ value.summary }}</h4>
           </div>
       </div>
     </div>
@@ -40,6 +40,10 @@ export default {
   async mounted() {
     await this.loadUser();
     await this.getCurrentWeek();
+
+    if (this.dayIndex === -1) {
+      this.getNextWeek();
+    }
   },
   methods: {
     findTodayInWeek() {
@@ -114,33 +118,9 @@ export default {
       this.findTodayInWeek();
       this.planning_data = this.cache[this.dayIndex];
     },
-    getLessonType(event) {
-      return event.description.split("\n\n")[1].split("\n")[0];
-    },
-    getTeachers(event) {
-      return event.description.trim().split("\n").filter(this.isName);
-    },
-    isName(string) {
-      let isName = true;
-      const tokens = string.split(" ");
-      const containsNumber = string => /\d/.test(string);
-
-      for(let i = 0; i < tokens.length - 2; i++) {
-        if ((! isName))
-          return false;
-
-        isName = (tokens[i]).toUpperCase() === tokens[i];
-      }
-
-      const lastToken = tokens[tokens.length - 1];
-      const isFirstLetterUppercase = lastToken.charAt(0) === lastToken.charAt(0).toUpperCase();
-      const isSecondLetterLowercase = lastToken.charAt(1) === lastToken.charAt(1).toLowerCase();
-
-      return isName
-          && isFirstLetterUppercase
-          && isSecondLetterLowercase
-          && tokens.length >= 2
-          && (!containsNumber(string));
+    displayLesson(value) {
+      this.$store.dispatch("setSelectedLesson", value);
+      this.$router.push("lesson");
     }
   }
 }
@@ -175,6 +155,11 @@ export default {
   font-size: smaller;
 }
 
+.event:active {
+  background-color: #f7f7f7;
+  filter: brightness(0.9);
+}
+
 section > span.button {
   width: 2vw;
   min-width: unset;
@@ -188,6 +173,7 @@ section {
   flex-direction: row;
   justify-content: space-evenly;
   align-items: center;
+  margin-top: 5%;
 }
 
 .planning-wrapper {
@@ -196,5 +182,15 @@ section {
 
 .planning-view {
   width: 80vw;
+}
+
+h6 {
+  margin-bottom: 0;
+  margin-top: 0.5em;
+}
+
+h4 {
+  margin-top: 0.5em;
+  margin-bottom: 0.5em;
 }
 </style>

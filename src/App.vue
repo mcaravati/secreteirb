@@ -37,7 +37,7 @@ html, body, #app {
 
 html, body {
   margin: 0;
-  background-color: #F6F9FE;
+  background-color: #EBEFF5;
 }
 
 header {

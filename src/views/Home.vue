@@ -63,6 +63,7 @@ export default {
 .suggestion:hover {
   filter: brightness(0.9);
 }
+
 #suggestion-wrapper {
   position: absolute;
   width: 100%;
@@ -79,7 +80,7 @@ export default {
   user-select: text;
   outline: none;
   height: 50px;
-  border: 1px solid #e5e5e5;
+  border: 0px solid #e5e5e5;
   background-color: white;
   position: relative;
   box-sizing: border-box;
@@ -96,6 +97,7 @@ export default {
   margin: 1vh 0 0;
   padding: .5vh 0;
   cursor: pointer;
+  font-weight: bold;
 }
 
 .suggestion:active {
