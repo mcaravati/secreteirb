@@ -2,8 +2,6 @@ import { createRouter, createWebHashHistory } from "vue-router";
 
 import store from "./store.js";
 import Home from "./views/Home.vue";
-import Stop from "./views/Stop.vue";
-import MyStop from "./views/MyStop.vue";
 import Planning from "./views/Planning.vue";
 import Login from "./views/Login.vue";
 import Account from "./views/Account.vue";
@@ -20,30 +18,6 @@ const routes = [
             }
 
             next();
-        }
-    },
-    {
-        path: "/stop",
-        name: "Stop",
-        component: Stop,
-        beforeEnter: async (to, from) => {
-            if (! await store.dispatch("hasSetSelectedStop")) {
-                return {
-                    name: "Home"
-                };
-            }
-        }
-    },
-    {
-        path: "/mystop",
-        name: "MyStop",
-        component: MyStop,
-        beforeEnter: async (to, from) => {
-            if (! await store.dispatch("hasSetSelectedWay")) {
-                return {
-                    name: "Home"
-                };
-            }
         }
     },
     {
