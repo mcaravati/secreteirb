@@ -25,24 +25,17 @@ export default {
   mounted() {
     // Store the search bar HTML element for future use
     this.searchBar = document.getElementById("search-bar");
-    this.searchBar.addEventListener("focus", this.onFocus);
+    this.searchBar.addEventListener("focus", async event => {
+      this.onFocus();
+      console.log(event);
+      await this.search(event);
+      });
     this.searchBar.addEventListener("blur", this.onBlur);
 
     // Wait for user to stop typing to send the search request
     this.searchBar.addEventListener("keyup", event => {
       clearTimeout(this.timeout);
-
-      this.timeout = setTimeout(async () => {
-        const input = event.target.value;
-
-        if (input.length <= 1) {
-          this.suggestions = [];
-        }
-
-        // Send the search request
-        const response = await axios.get(`https://ws.infotbm.com/ws/1.0/get-schedule/${input}?referer=www`, {headers: {}});
-        this.suggestions = response.data.filter(e => e.city !== undefined && e.city !== null);
-      }, 500);
+      this.timeout = setTimeout(async () => await this.search(event), 500);
     });
   },
   methods: {
@@ -50,10 +43,24 @@ export default {
       emitter.emit("stopSelected", value);
     },
     onBlur() {
-      emitter.emit("searchStopped");
+      if (this.suggestions.length === 0) {
+        this.suggestions = [];
+        emitter.emit("searchStopped");
+      }
     },
     onFocus() {
       emitter.emit("searchStarted");
+    },
+    async search(event) {
+      const input = event.target.value;
+
+      if (input.length <= 1) {
+        this.suggestions = [];
+      }
+
+      // Send the search request
+      const response = await axios.get(`https://ws.infotbm.com/ws/1.0/get-schedule/${input}?referer=www`, {headers: {}});
+      this.suggestions = response.data.filter(e => e.city !== undefined && e.city !== null);
     }
   }
 }
