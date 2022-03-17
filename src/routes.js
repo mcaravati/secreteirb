@@ -1,8 +1,8 @@
 import { createRouter, createWebHashHistory } from "vue-router";
 
 import store from "./store.js";
-import Home from "./views/Home.vue";
-import Planning from "./views/Planning.vue";
+import Home from "./views/HomeView.vue";
+import PlanningView from "./views/PlanningView.vue";
 import Login from "./views/Login.vue";
 import Account from "./views/Account.vue";
 
@@ -10,20 +10,12 @@ const routes = [
     {
         path: "/",
         name: "Home",
-        component: Home,
-        beforeEnter: async (to, from, next) => {
-            if (await store.dispatch("hasSetPreferredStop")) {
-                next("/mystop");
-                return false;
-            }
-
-            next();
-        }
+        component: Home
     },
     {
         path: "/planning",
         name: "Planning",
-        component: Planning,
+        component: PlanningView,
         beforeEnter: async (to, from) => {
             if (! await store.dispatch("isLoggedIn")) {
                 return {
