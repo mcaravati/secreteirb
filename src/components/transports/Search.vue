@@ -71,10 +71,6 @@ export default {
   position: relative;
   width: 90vw;
   margin-top: 15px;
-  display: flex;
-  flex-direction: column;
-  justify-content: space-between;
-  align-items: center;
 }
 
 .suggestion:hover {
