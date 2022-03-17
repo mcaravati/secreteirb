@@ -2,6 +2,7 @@
   <div class="search-wrapper">
     <img alt="search-icon" class="search-icon" src="../../assets/search.svg"/>
     <input id="search-bar" type="text">
+
     <div id="suggestion-wrapper">
       <div class="suggestion" v-bind:key="suggestion" v-for="suggestion in this.suggestions.slice(0, 5)" @click="onSuggestionClick(suggestion)">
         {{suggestion.name}} - {{suggestion.city}}
@@ -19,7 +20,7 @@ export default {
   data() {
     return {
       suggestions: [],
-      searchBar: undefined
+      searchBar: undefined,
     }
   },
   mounted() {
@@ -27,7 +28,6 @@ export default {
     this.searchBar = document.getElementById("search-bar");
     this.searchBar.addEventListener("focus", async event => {
       this.onFocus();
-      console.log(event);
       await this.search(event);
       });
     this.searchBar.addEventListener("blur", this.onBlur);
@@ -71,6 +71,10 @@ export default {
   position: relative;
   width: 90vw;
   margin-top: 15px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  align-items: center;
 }
 
 .suggestion:hover {

@@ -1,6 +1,6 @@
 <template>
   <div class="login-wrapper">
-    <img class="illustration" src="../assets/Background.svg" alt="girl-laptop" />
+    <img class="illustration" src="../assets/authentication.svg" alt="auth-illustration" />
     <div>
       <h2>Connectez-vous</h2>
       <h5>pour accéder à votre planning</h5>
