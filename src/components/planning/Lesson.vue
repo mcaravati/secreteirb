@@ -1,18 +1,18 @@
 <template>
   <div class="lesson-wrapper">
     <div class="lesson" @click="hideLesson">
-      <h6>{{ getLessonType() || "Inconnu" }}</h6>
+      <h6>{{ lesson.type || "Inconnu" }}</h6>
       <h4>{{ lesson.start }} - {{ lesson.end }}</h4>
       <h2>{{ lesson.summary }}</h2>
 
       <article class="teachers">
-        <h6 v-for="teacher in getTeachers()">
+        <h6 v-for="teacher in lesson.teachers">
           {{ teacher }}
         </h6>
       </article>
 
       <article class="rooms">
-        <h6 v-for="room in getRooms()">
+        <h6 v-for="room in lesson.location">
           {{ room }}
         </h6>
       </article>
@@ -27,37 +27,6 @@ export default {
   name: "Lesson",
   props: ["lesson"],
   methods: {
-    getLessonType() {
-      return this.lesson.description.split("\n\n")[1].split("\n")[0];
-    },
-    getTeachers() {
-      return this.lesson.description.trim().split("\n").filter(this.isName);
-    },
-    isName(string) {
-      let isName = true;
-      const tokens = string.split(" ");
-      const containsNumber = string => /\d/.test(string);
-
-      for(let i = 0; i < tokens.length - 2; i++) {
-        if ((! isName))
-          return false;
-
-        isName = (tokens[i]).toUpperCase() === tokens[i];
-      }
-
-      const lastToken = tokens[tokens.length - 1];
-      const isFirstLetterUppercase = lastToken.charAt(0) === lastToken.charAt(0).toUpperCase();
-      const isSecondLetterLowercase = lastToken.charAt(1) === lastToken.charAt(1).toLowerCase();
-
-      return isName
-          && isFirstLetterUppercase
-          && isSecondLetterLowercase
-          && tokens.length >= 2
-          && (!containsNumber(string));
-    },
-    getRooms() {
-      return this.lesson.location.replaceAll("\\", "").split(",");
-    },
     hideLesson() {
       emitter.emit("lessonSelected", null);
     }
