@@ -1,11 +1,16 @@
 <template>
   <div class="user-wrapper">
     <div v-if="user" class="user">
-      <img src="../assets/id-card.png" alt="id-card" />
-      <div class="table">
-        <h2>{{this.user.name}}</h2>
-        <p>{{this.user.email}}</p>
-        <p class="logout" @click="logout">Déconnexion</p>
+      <div class="user-body">
+        <img src="../assets/id-card.png" alt="id-card" />
+        <div class="table">
+          <h2>{{this.user.name}}</h2>
+          <p>{{this.user.email}}</p>
+        </div>
+      </div>
+
+      <div class="logout" @click="logout">
+        Déconnexion
       </div>
     </div>
   </div>
@@ -39,8 +44,8 @@ img {
 .logout {
   padding: 2vh 5vw;
   background-color: #ff7675;
-  border-radius: 15px;
   cursor: pointer;
+  width: 100%;
 }
 
 .logout:hover {
@@ -53,12 +58,13 @@ img {
   flex-direction: column;
   align-items: center;
   justify-content: space-evenly;
-  border-radius: 15px;
-  height: 90%;
+  height: 80%;
   width: 80%;
-  padding: 1vh 5vw;
+  padding: 0 5vw;
+  border-radius: 15px;
   word-break: break-word;
   box-sizing: border-box;
+  overflow: hidden;
 }
 
 .user-wrapper {
@@ -67,5 +73,13 @@ img {
   align-items: center;
   height: 100%;
   width: 100%;
+}
+
+.user-body {
+  height: 100%;
+  display: flex;
+  align-items: center;
+  flex-direction: column;
+  justify-content: center;
 }
 </style>

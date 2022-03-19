@@ -14,14 +14,15 @@ export default {
   data() {
     return {
       refreshIntervalId: null,
-      externalCode: null,
-      arrivalTime: null
+      arrivalTime: null,
+      externalCode: null
     }
   },
   async mounted() {
     let response = await axios.get(`https://ws.infotbm.com/ws/1.0/stop-points-informations/${this.stop.routeId}/${this.stop.stopPointId}`);
     this.externalCode = response.data.externalCode;
 
+    // await this.refreshArrivalTime();
     this.refreshIntervalId = setInterval(this.refreshArrivalTime, 1000);
   },
   methods: {
@@ -66,6 +67,12 @@ export default {
   height: 40px;
   overflow: hidden;
   align-items: center;
+  cursor: pointer;
+}
+
+.way:active {
+  background-color: #f7f7f7;
+  filter: brightness(0.9);
 }
 
 .way > img {

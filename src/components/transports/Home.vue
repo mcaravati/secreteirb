@@ -4,7 +4,7 @@
 
     <div class="saved-stops-wrapper" v-if="!searching && (savedStops.length > 0)">
       <h2>Arrêts sauvegardés</h2>
-      <SavedStop v-for="way in this.savedStops" key="way" :stop="way" />
+      <SavedStop v-for="way in this.savedStops" key="way" :stop="way" @click="onSavedStopClick(way)"/>
     </div>
   </div>
 </template>
@@ -28,6 +28,11 @@ export default {
     emitter.on("searchStopped", () => this.searching = false);
 
     this.savedStops = await this.$store.dispatch("getSavedStops");
+  },
+  methods: {
+    onSavedStopClick(way) {
+      emitter.emit("waySelected", way);
+    }
   }
 }
 </script>

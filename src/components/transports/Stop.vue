@@ -24,7 +24,7 @@ export default {
 
     // Retrieve lines that use this stop
     stopResponse.data.stopPoints.forEach(stopPoint => stopPoint.routes.forEach(async route => {
-      const lineResponse = await axios.get(`https://ws.infotbm.com/ws/1.0/network/line-informations/${route.line.id}`, {headers: {}});
+      const lineResponse = await axios.get(`https://ws.infotbm.com/ws/1.0/network/line-informations/${route.line.id}`, {headers: {}})
       const json = lineResponse.data;
 
       // I don't know why, but it works differently for tramways
@@ -39,8 +39,11 @@ export default {
         transportType: json.type,
         transportCode: code,
         image: json.picto,
-        stopPointId: stopPoint.id
+        stopPointId: stopPoint.id,
+        stopName: this.stopProp.name
       });
+
+      this.lines.sort((a, b) => a.transportCode.localeCompare(b.transportCode));
     }));
   },
   methods: {
@@ -69,6 +72,16 @@ export default {
   height: 40px;
   overflow: hidden;
   align-items: center;
+}
+
+.line > span {
+  height: 100%;
+  text-overflow: ellipsis;
+  overflow: hidden;
+  white-space: nowrap;
+  display: flex;
+  align-items: center;
+  padding-left: 4vw;
 }
 
 .line:active {

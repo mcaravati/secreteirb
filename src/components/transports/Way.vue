@@ -1,18 +1,19 @@
 <template>
   <div class="stop-wrapper">
     <div v-if="this.wayProp" class="stop" @click="closeStopDisplay">
-      <img :src="this.wayProp.image" alt="transport-image"/>
       <div class="stop-body">
-        <h2>{{ this.wayProp.destination }}</h2>
-        <h3>{{ this.arrivalTime || "Chargement ..."}}</h3>
+        <h4>{{ this.wayProp.stopName }}</h4>
+        <h3>{{ this.wayProp.destination }}</h3>
 
-        <div class="save-button saved" v-if="saved" @click="unsave">
-          Oublier
+        <div class="arrival-wrapper">
+          <h3 class="arrival" v-for="arrivalTime in arrivalTimes">{{ arrivalTime.text || "Chargement ..." }}</h3>
         </div>
-
-        <div class="save-button" v-if="!saved" @click="save">
-          Sauvegarder
-        </div>
+      </div>
+      <div class="save-button saved" v-if="saved" @click="unsave">
+        Oublier
+      </div>
+      <div class="save-button" v-else @click="save">
+        Sauvegarder
       </div>
     </div>
   </div>
@@ -21,6 +22,7 @@
 <script>
 import {emitter} from "../../emitter";
 import axios from "axios";
+import moment from "moment";
 
 export default {
   name: "Way",
@@ -28,7 +30,7 @@ export default {
   data() {
     return {
       externalCode: null,
-      arrivalTime: null,
+      arrivalTimes: [],
       refreshIntervalId: null,
       saved: false
     }
@@ -37,30 +39,39 @@ export default {
     let response = await axios.get(`https://ws.infotbm.com/ws/1.0/stop-points-informations/${this.wayProp.routeId}/${this.wayProp.stopPointId}`);
     this.externalCode = response.data.externalCode;
 
+    await this.refreshArrivalTime();
     this.refreshIntervalId = setInterval(this.refreshArrivalTime, 1000);
     this.saved = await this.$store.dispatch("isSaved", this.wayProp);
   },
   methods: {
     async refreshArrivalTime() {
+      let arrivalTimes = [];
+
       // Get current transport's informations
       const response = await axios.get(`https://ws.infotbm.com/ws/1.0/get-realtime-pass/${this.externalCode}/${this.wayProp.transportCode}`, {headers:{}});
       const destinations = response.data.destinations;
 
       // Might be a TransGironde bus
       if (!destinations) {
-        this.arrivalTime = "Pas de suivi en temps réel pour ce transporteur :(";
+        arrivalTimes.push("Pas de suivi en temps réel pour ce transporteur :(");
         clearInterval(this.refreshIntervalId);
         return;
       }
 
-      const stopDestination = destinations[Object.keys(destinations)[0]];
+      Object.values(destinations).forEach(stopDestination => {
+        if (stopDestination.length === 0) {
+          arrivalTimes.push("Plus de transports :(");
+          return;
+        }
 
-      if (stopDestination.length === 0) {
-        this.arrivalTime = "Plus de transports :(";
-        return;
-      }
+        stopDestination.forEach(x => arrivalTimes.push({
+          text: x.waittime_text,
+          moment: moment(x.waittime, "HH:mm:ss")
+        }));
+      });
 
-      this.arrivalTime = stopDestination[0].waittime_text;
+      arrivalTimes.sort((a, b) => a.moment.diff(b.moment));
+      this.arrivalTimes = arrivalTimes;
     },
     closeStopDisplay() {
       clearInterval(this.refreshIntervalId);
@@ -116,27 +127,42 @@ export default {
 
 .stop-body {
   padding: 1vh 5vw;
-  position: absolute;
-  top: 20%;
   background-color: white;
-  border-top: 1px solid lightgray;
-  height: 50%;
-  border-radius: 15px;
-}
-
-.stop > img {
-  position: absolute;
-  top: 0;
+  border-radius: 15px 15px 0 0;
+  height: 100%;
+  width: 100%;
 }
 
 .save-button {
   width: 100%;
-  border-radius: 10px;
   padding: 2vh 1vw;
   background-color: #55efc4;
+  cursor: pointer;
+}
+
+.arrival-wrapper {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.arrival {
+  background-color: #dcdde1;
+  width: 80%;
+  padding: 1vh 1vw;
+  border-radius: 10px;
+  margin-top: 0;
 }
 
 .saved {
   background-color: #ff7675;
+}
+
+.stop-body + h4 {
+  margin-bottom: 2%;
+}
+
+.stop-body + h3 {
+  margin-top: 0;
 }
 </style>

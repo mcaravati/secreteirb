@@ -1,7 +1,10 @@
 <template>
-  <Home v-if="!stop && !way" />
+  <KeepAlive>
+    <Home v-if="!stop && !way" />
+  </KeepAlive>
   <Stop :stopProp="stop" v-if="stop && !way" />
-  <Way :wayProp="way" v-if="stop && way" />
+
+  <Way :wayProp="way" v-if="way" />
 </template>
 
 <script>

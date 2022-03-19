@@ -1,7 +1,7 @@
 <template>
   <div class="search-wrapper">
     <img alt="search-icon" class="search-icon" src="../../assets/search.svg"/>
-    <input id="search-bar" type="text">
+    <input id="search-bar" type="text" placeholder="Chercher un arrêt">
 
     <div id="suggestion-wrapper">
       <div class="suggestion" v-bind:key="suggestion" v-for="suggestion in this.suggestions.slice(0, 5)" @click="onSuggestionClick(suggestion)">
@@ -40,11 +40,14 @@ export default {
   },
   methods: {
     onSuggestionClick(value) {
+      this.searchBar.value = "";
+      this.suggestions = [];
+      this.onBlur();
+
       emitter.emit("stopSelected", value);
     },
     onBlur() {
       if (this.suggestions.length === 0) {
-        this.suggestions = [];
         emitter.emit("searchStopped");
       }
     },
